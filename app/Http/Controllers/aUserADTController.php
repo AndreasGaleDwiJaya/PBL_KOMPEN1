@@ -97,74 +97,65 @@ class aUserADTController extends Controller
     }
 
     public function create_ajax()
-    {
-        $level = LevelModel::select('level_id', 'level_nama')->get();
+{
+    $level = LevelModel::select('level_id', 'level_nama')->get();
+    
+    return view('aUserADT.create_ajax', [
+        'level' => $level
+    ]);
+}
 
-        return view('aUserADT.create_ajax')
-            ->with('level', $level);
-    }
+public function store_ajax(Request $request)
+{
+    if ($request->ajax() || $request->wantsJson()) {
+        $rules = [
+            'username' => 'required|string|min:3|unique:m_useradt,username',
+            'nama' => 'required|string|max:100',
+            'password' => 'required|min:5',
+            'nip' => 'required|string|max:20',
+            'email' => 'required|string|max:50',
+            'level_id' => 'required|integer',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ];
 
-    public function store_ajax(Request $request)
-    {
-        if ($request->ajax() || $request->wantsJson()) {
-            $rules = [
-                'username' => 'required|string|min:3|unique:m_useradt,username',
-                'nama' => 'required|string|max:100',
-                'password' => 'required|min:5',
-                'nip' => 'required|string|max:20',
-                'email' => 'required|string|max:50',
-                'level_id' => 'required|integer',
-                'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            ];
+        $validator = Validator::make($request->all(), $rules);
 
-            // use iluminate/support/facades/validator
-            $validator = Validator::make($request->all(), $rules);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Validasi Gagal',
-                    'msgField' => $validator->errors(),
-                ]);
-            }
-
-            $input = $request->all();
-
-            // Jika avatar ada, simpan gambar, jika tidak ada gunakan default
-            if ($request->hasFile('avatar')) {
-                $fileName = 'profile_' . Auth::aUserADT()->adt_id . '.' . $request->avatar->getClientOriginalExtension();
-
-                // Check if an existing profile picture exists and delete it
-                $oldFile = 'profile_pictures/' . $fileName;
-                if (Storage::disk('public')->exists($oldFile)) {
-                    Storage::disk('public')->delete($oldFile);
-                }
-
-                $request->avatar->move(public_path('gambar'), $fileName);
-            } else {
-                $fileName = 'profil-pic.png'; // default avatar
-            }
-
-            UserADTModel::create([
-                'level_id' => $input['level_id'],
-                'username' => $input['username'],
-                'nama' => $input['nama'],
-                'password' => bcrypt($input['password']),
-                'avatar' => $fileName, // Simpan nama file gambar
-                'nip' => $input['nip'],
-                'email' => $input['email'],
-                
-            ]);
-
+        if ($validator->fails()) {
             return response()->json([
-                'status' => true,
-                'message' => 'Data User berhasil disimpan',
+                'status' => false,
+                'message' => 'Validasi Gagal',
+                'errors' => $validator->errors(),
             ]);
-
         }
 
-        redirect('/');
+        $input = $request->all();
+
+        // Jika ada avatar, upload gambar
+        $fileName = 'profil-pic.png'; // Default avatar
+        if ($request->hasFile('avatar')) {
+            $fileName = 'profile_' . time() . '.' . $request->avatar->getClientOriginalExtension();
+            $request->avatar->storeAs('public/avatar', $fileName);
+        }
+
+        UserADTModel::create([
+            'level_id' => $input['level_id'],
+            'username' => $input['username'],
+            'nama' => $input['nama'],
+            'password' => bcrypt($input['password']),
+            'avatar' => $fileName,
+            'nip' => $input['nip'],
+            'email' => $input['email'],
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Data User berhasil disimpan',
+        ]);
     }
+
+    return redirect('/');
+}
+
 
     public function edit_ajax(string $id)
     {

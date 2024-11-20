@@ -2,7 +2,7 @@
     <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title">Konfirmasi Penghapusan</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
@@ -10,7 +10,7 @@
             <p>Apakah Anda yakin ingin menghapus Bidang Kompetensi <strong>{{ $bidKom->nama_bidkom }}</strong>?</p>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
             <form action="{{ route('bidangKompetensi.destroy', $bidKom->bidkom_id) }}" method="POST" id="formDelete">
                 @csrf
                 @method('DELETE')
@@ -33,11 +33,19 @@
                     $('#formDelete').attr('action', '{{ route("bidangKompetensi.destroy", ":id") }}'.replace(':id', data.id));
                     $('#myModal').modal('show');
                 } else {
-                    alert('Data tidak ditemukan');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Data tidak ditemukan',
+                    });
                 }
             },
             error: function () {
-                alert('Terjadi kesalahan saat memuat data');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Terjadi kesalahan saat memuat data',
+                });
             }
         });
     }
@@ -46,39 +54,52 @@
     $('#formDelete').submit(function (e) {
         e.preventDefault();
 
-        $.ajax({
-            url: $(this).attr('action'),
-            method: 'POST',
-            data: $(this).serialize(),
-            success: function (response) {
-                if (response.success) {
-                    // Menutup modal konfirmasi
-                    $('#myModal').modal('hide');
+        // Tampilkan konfirmasi penghapusan dengan SweetAlert
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Data ini akan dihapus secara permanen.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Hapus',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            // Menutup modal konfirmasi
+                            $('#myModal').modal('hide');
 
-                    // Menampilkan SweetAlert sukses
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: 'Data berhasil dihapus.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(function() {
-                        // Opsional: Refresh halaman atau lakukan tindakan lain setelah penghapusan
-                        location.reload();  // Refresh halaman
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal!',
-                        text: 'Terjadi kesalahan saat menghapus data.',
-                    });
-                }
-            },
-            error: function () {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal!',
-                    text: 'Terjadi kesalahan.',
+                            // Menampilkan SweetAlert sukses
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Data berhasil dihapus.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(function() {
+                                // Opsional: Refresh halaman atau lakukan tindakan lain setelah penghapusan
+                                location.reload();  // Refresh halaman
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal!',
+                                text: 'Terjadi kesalahan saat menghapus data.',
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan.',
+                        });
+                    }
                 });
             }
         });

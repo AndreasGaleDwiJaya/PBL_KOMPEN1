@@ -9,10 +9,10 @@
     <div class="card-header">
         <h3 class="card-title">{{ $page->title }}</h3>
         <div class="card-tools">
-            <button onclick="modalAction('{{ url('/user/import') }}')" class="btn btn-info">Import User</button>
+            {{-- <button onclick="modalAction('{{ url('/user/import') }}')" class="btn btn-info">Import User</button>
             <a href="{{ url('/user/export_excel') }}" class="btn btn-primary"><i class="fa fa-fileexcel"></i> Export User Excel</a>
-                <a href="{{ url('/user/export_pdf') }}" class="btn btn-warning"><i class="fa fa-filepdf"></i> Export User PDF</a>
-            <button onclick="modalAction('{{ url('aUserADT/create_ajax') }}')" class="btn btn-success">Tambah</button>
+                <a href="{{ url('/user/export_pdf') }}" class="btn btn-warning"><i class="fa fa-filepdf"></i> Export User PDF</a> --}}
+                <button onclick="showAjax('{{ route('user.create_ajax') }}')" class="btn btn-success">Tambah</button>
         </div>
     </div>
 <div class="card-body">

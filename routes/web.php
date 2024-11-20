@@ -73,22 +73,24 @@ Route::get('/mUpdateKompenSelesai', [UpdateKompenSelesaiController::class, 'inde
 
 
 Route::group(['prefix' => 'level'], function () {
-    Route::get('/', [LevelController::class, 'index']);
-    Route::post('/list', [LevelController::class, 'list']);
-    Route::get('/create', [LevelController::class, 'create']);
-    Route::post('/', [LevelController::class, 'store']);
-    Route::get('/create_ajax', [LevelController::class, 'create_ajax']);
-    Route::post('/ajax', [LevelController::class, 'store_ajax']);
-    Route::get('/{id}', [LevelController::class, 'show']);
-    Route::get('/{id}/edit', [LevelController::class, 'edit']);
-    Route::put('/{id}', [LevelController::class, 'update']);
-    Route::get('/{id}/edit_ajax', [LevelController::class, 'edit_ajax']);
-    Route::put('/{id}/update_ajax', [LevelController::class, 'update_ajax']);
-    Route::get('/{id}/delete_ajax', [LevelController::class, 'confirm_ajax']);
-    Route::delete('/{id}/delete_ajax', [LevelController::class, 'delete_ajax']);
-    Route::delete('/{id}', [LevelController::class, 'destroy']);
-    
+    Route::get('/', [LevelController::class, 'index'])->name('level.index');
+    Route::post('/list', [LevelController::class, 'list'])->name('level.list');
+    Route::get('/create', [LevelController::class, 'create'])->name('level.create');
+    Route::post('/', [LevelController::class, 'store'])->name('level.store');
+    Route::get('/create_ajax', [LevelController::class, 'create_ajax'])->name('level.create_ajax');
+    Route::post('/ajax', [LevelController::class, 'store_ajax'])->name('level.store_ajax');
+Route::put('level/{level_id}/update_ajax', [LevelController::class, 'update_ajax'])->name('level.update_ajax');
+//Route::get('level/{id}/show_ajax', [LevelController::class, 'show_ajax'])->name('level.show_ajax');
+Route::put('/{id}', [LevelController::class, 'show'])->name('level.show');
+    Route::get('/{id}/edit', [LevelController::class, 'edit'])->name('level.edit');
+    Route::put('/{id}', [LevelController::class, 'update'])->name('level.update');
+    Route::get('/{id}/edit_ajax', [LevelController::class, 'edit_ajax'])->name('level.edit_ajax');
+    Route::put('/{id}/update_ajax', [LevelController::class, 'update_ajax'])->name('level.update_ajax');
+    Route::get('/{id}/delete_ajax', [LevelController::class, 'confirm_ajax'])->name('level.delete_ajax');
+    Route::delete('/{id}/delete_ajax', [LevelController::class, 'delete_ajax'])->name('level.delete_ajax_confirm');
+    Route::delete('/{id}', [LevelController::class, 'destroy'])->name('level.destroy');
 });
+
 
 
 // User Admin/Dosen/Teknisi
@@ -99,8 +101,11 @@ Route::group(['prefix' => 'aAdminDosenTeknisi'], function () {
     Route::post('/list', [aUserADTController::class, 'list']);      // menampilkan data user dalam bentuk json untuk datatables
     Route::get('/create', [aUserADTController::class, 'create']);   // menampilkan halaman form tambah user
     Route::post('/', [aUserADTController::class, 'store']);         // menyimpan data user baru
-    Route::get('/create_ajax', [aUserADTController::class, 'create_ajax']);   // menampilkan halaman form tambah user
-    Route::post('/ajax', [aUserADTController::class, 'store_ajax']);         // menyimpan data user baru
+    Route::get('/aUserADT/create_ajax', [aUserADTController::class, 'create_ajax'])->name('user.create_ajax');
+    //Route::get('/create_ajax', [aUserADTController::class, 'create_ajax']);   // menampilkan halaman form tambah user
+    Route::post('/user/store_ajax', [aUserADTController::class, 'store_ajax'])->name('user.store_ajax');
+
+    //Route::post('/ajax', [aUserADTController::class, 'store_ajax']);         // menyimpan data user baru
     Route::get('/{id}/show_ajax', [aUserADTController::class, 'show_ajax']);
     Route::get('/{id}', [aUserADTController::class, 'show']);       // menampilkan detail user
     Route::get('/{id}/edit', [aUserADTController::class, 'edit']);  // menampilkan halaman form edit user
@@ -142,7 +147,12 @@ Route::group(['prefix' => 'aMahasiswa'], function () {
 });
 
 // Daftar Mahasiswa Alpha
-Route::get('/aDaftarMahasiswaAlpha', [aDMAlphaController::class, 'index']);
+// Route::get('/aDaftarMahasiswaAlpha', [aDMAlphaController::class, 'index']);
+Route::group(['prefix' => 'aDaftarMahasiswaAlpha'], function () {
+    Route::get('/', [aDMAlphaController::class, 'index'])->name('aDMAlpha.index'); // Halaman utama
+    Route::get('/list', [aDMAlphaController::class, 'list'])->name('aDMAlpha.list'); // Data untuk DataTables
+});
+
 
 // Daftar Mahasiswa Kompen
 Route::get('/aDaftarMahasiswaKompen', [aDMKompenController::class, 'index']);

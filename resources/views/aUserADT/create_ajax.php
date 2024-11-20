@@ -1,157 +1,145 @@
-<form action="{{ url('/aUserADT/ajax') }}" method="POST" id="form-tambah" enctype="multipart/form-data">
-    @csrf
-    <div id="modal-master" class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Data User</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Level Pengguna</label>
-                    <select name="level_id" id="level_id" class="form-control" required>
-                        <option value="">- Pilih Level -</option>
-                        @foreach ($level as $l)
-                            <option value="{{ $l->level_id }}">{{ $l->level_nama }}</option>
-                        @endforeach
-                    </select>
-                    <small id="error-level_id" class="error-text form-text text-danger"></small>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg" id="formContainer">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>Form Tambah User</h4>
                 </div>
-                <div class="form-group">
-                    <label>Username</label>
-                    <input value="" type="text" name="username" id="username" class="form-control" required>
-                    <small id="error-username" class="error-text form-text text-danger"></small>
+                <div class="card-body">
+                    <form id="formCreateUser" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input type="text" name="username" id="username" class="form-control" placeholder="Masukkan username">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="nama">Nama</label>
+                                    <input type="text" name="nama" id="nama" class="form-control" placeholder="Masukkan nama">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input type="password" name="password" id="password" class="form-control" placeholder="Masukkan password">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="nip">NIP</label>
+                                    <input type="text" name="nip" id="nip" class="form-control" placeholder="Masukkan NIP">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" name="email" id="email" class="form-control" placeholder="Masukkan email">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="level_id">Level</label>
+                                    <select name="level_id" id="level_id" class="form-control">
+    <option value="" disabled selected>Pilih Level</option>
+    @foreach ($level as $lvl)
+        <option value="{{ $lvl->level_id }}">{{ $lvl->level_nama }}</option>
+    @endforeach
+</select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="avatar">Avatar</label>
+                                    <input type="file" name="avatar" id="avatar" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button type="button" id="btnSubmit" class="btn btn-primary">Simpan</button>
+                                <button type="button" id="btnCancel" class="btn btn-secondary">Batal</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label>Nama</label>
-                    <input value="" type="text" name="nama" id="nama" class="form-control" required>
-                    <small id="error-nama" class="error-text form-text text-danger"></small>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input value="" type="password" name="password" id="password" class="formcontrol" required>
-                    <small id="error-password" class="error-text form-text text-danger"></small>
-                </div>
-                <div class="form-group">
-                    <label>Pilih Foto Profil</label>
-                    <input type="file" name="avatar" id="avatar" class="formcontrol">
-                    <small id="error-avatar" class="error-text form-text textdanger"></small>
-                </div>
-                <div class="form-group">
-                    <label>NIP</label>
-                    <input value="" type="nip" name="nip" id="nip" class="formcontrol" required>
-                    <small id="error-nip" class="error-text form-text text-danger"></small>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input value="" type="email" name="email" id="email" class="formcontrol" required>
-                    <small id="error-email" class="error-text form-text text-danger"></small>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
-                <button type="submit" class="btn btn-primary">Simpan</button>
             </div>
         </div>
     </div>
-</form>
+</div>
 
 <script>
     $(document).ready(function() {
-        $("#form-tambah").validate({
-            rules: {
-                level_id: {
-                    required: true,
-                    number: true
-                },
-                username: {
-                    required: true,
-                    minlength: 3,
-                    maxlength: 20
-                },
-                nama: {
-                    required: true,
-                    minlength: 3,
-                    maxlength: 100
-                },
-                password: {
-                    required: true,
-                    minlength: 5,
-                    maxlength: 20
-                },
-                email: {
-                    required: true,
-                    minlength: 5,
-                    maxlength: 50
-                },
-                nip: {
-                    required: true,
-                    minlength: 5,
-                    maxlength: 20
-                },
-                avatar: {
-                    extension: "jpg|jpeg|png"
-                }
-            },
-            submitHandler: function(form) {
-            var formData = new FormData(form); // Gunakan FormData untuk file upload
+        // Tombol Submit
+        $('#btnSubmit').click(function() {
+            let formData = new FormData($('#formCreateUser')[0]);
 
             $.ajax({
-                url: form.action,
-                type: form.method,
+                url: "{{ route('user.store_ajax') }}",  // Ganti URL dengan route yang sesuai
+                method: "POST",
                 data: formData,
                 contentType: false,
                 processData: false,
                 success: function(response) {
                     if (response.status) {
-                        // Menampilkan notifikasi berhasil
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil',
-                            text: response.message
-                        }).then(function() {
-                            // Reload halaman atau update data setelah Swal ditutup
-                            if (typeof dataUser !== 'undefined') {
-                                dataUser.ajax.reload(); // Reload data table jika ada
-                            } else {
-                                location.reload(); // Reload halaman jika tidak ada dataUser
-                            }
+                            text: response.message,
+                        }).then(() => {
+                            $('#formContainer').css('display', 'none'); // Menyembunyikan form setelah berhasil
+                            $('#table_user').DataTable().ajax.reload(); // Refresh data tabel
                         });
                     } else {
-                        // Menampilkan error dari validasi field
-                        $('.error-text').text('');
-                        $.each(response.msgField, function(prefix, val) {
-                            $('#error-' + prefix).text(val[0]);
-                        });
-
                         Swal.fire({
                             icon: 'error',
-                            title: 'Terjadi Kesalahan',
-                            text: response.message
+                            title: 'Gagal',
+                            html: '<ul>' + Object.values(response.errors).map(err => `<li>${err}</li>`).join('') + '</ul>',
                         });
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function() {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'Terjadi kesalahan. Silakan coba lagi nanti.'
+                        text: 'Terjadi kesalahan pada server!',
                     });
                 }
             });
-            return false;
-        },
-            errorElement: 'span',
-            errorPlacement: function(error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function(element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function(element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            }
+        });
+
+        // Fungsi untuk tombol Batal
+        $('#btnCancel').click(function() {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: 'Perubahan yang belum disimpan akan hilang.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Batalkan',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Reset form
+                    $('#formCreateUser')[0].reset();
+
+                    // Menyembunyikan form
+                    $('#formContainer').css('display', 'none');  // Form hilang
+
+                    // Menampilkan kembali halaman utama (misalnya, reload halaman)
+                    window.location.reload(); // Reload halaman untuk menampilkan kembali halaman biasa
+                }
+            });
         });
     });
 </script>

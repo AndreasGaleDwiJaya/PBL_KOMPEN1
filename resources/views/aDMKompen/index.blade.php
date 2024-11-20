@@ -18,7 +18,6 @@
                 <tr>
                     <th>No</th>
                     <th>Nama Mahasiswa</th>
-                    <th>NIM</th>
                     <th>Jumlah Jam Alpha</th>
                     <th>Jumlah Jam yang telah dikerjakan</th>
                     <th>Periode</th>
